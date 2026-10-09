@@ -1,100 +1,470 @@
-index.html
+static/index.html
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TAWAN Smart Farm AI</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f3f8f1;color:#243326}
-header{background:#166534;color:white;padding:25px 18px}
-header h1{margin:0 0 10px}
-header p{margin:0;line-height:1.6}
-main{max-width:950px;margin:auto;padding:18px}
-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
-button{border:0;border-radius:9px;padding:12px 16px;background:#166534;color:white;font-weight:bold;cursor:pointer}
-nav button{background:#dcfce7;color:#166534}
-nav button.active{background:#166534;color:white}
-.card{background:white;padding:18px;border-radius:15px;margin-bottom:16px;box-shadow:0 3px 12px #0000000c}
-h2{margin-top:0}
-label{display:block;font-weight:bold;margin:12px 0 6px}
-input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5cc;border-radius:8px;font-size:16px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.full{grid-column:1/-1}
-.hidden{display:none}
-.item{border:1px solid #dbe7dc;border-radius:10px;padding:13px;margin-top:12px}
-.price{font-size:20px;font-weight:bold;color:#166534}
-.small{font-size:13px;color:#657368;line-height:1.7}
-@media(max-width:550px){.grid{grid-template-columns:1fr}.full{grid-column:auto}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TAWAN Smart Farm AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-<header>
-<h1>🌱 TAWAN Smart Farm AI</h1>
-<p>แพลตฟอร์มจับคู่ซื้อขายผลผลิตเกษตร<br>เริ่มต้นที่อำเภอตากฟ้า จังหวัดนครสวรรค์</p>
-</header>
-<main>
-<nav>
-<button class="active" onclick="showTab('match',this)">🤝 Smart Match</button>
-<button onclick="showTab('market',this)">🌾 Smart Market</button>
-<button onclick="showTab('farm',this)">📊 Farm AI</button>
-</nav>
-<section id="match">
-<div class="card">
-<h2>📦 ลงประกาศขายผลผลิต</h2>
-<form id="sellForm">
-<div class="grid">
-<div><label>ชื่อผู้ขาย</label><input id="seller" required placeholder="ชื่อเกษตรกร"></div>
-<div><label>ผลผลิต</label>
-<select id="crop" required>
-<option value="">เลือกผลผลิต</option>
-<option>ข้าวโพดเลี้ยงสัตว์</option><option>ข้าว</option>
-<option>อ้อย</option><option>มันสำปะหลัง</option><option>ผัก</option><option>อื่น ๆ</option>
-</select></div>
-<div><label>ปริมาณ (กิโลกรัม)</label><input id="qty" type="number" min="1" required></div>
-<div><label>ราคา (บาท/กก.)</label><input id="price" type="number" min="0" step="0.01" required></div>
-<div><label>พื้นที่</label><input id="area" value="ตากฟ้า นครสวรรค์" required></div>
-<div><label>เบอร์โทรหรือ LINE</label><input id="contact" required></div>
-</div>
-<label>รายละเอียดเพิ่มเติม</label><textarea id="detail" placeholder="คุณภาพสินค้า วันพร้อมส่ง ฯลฯ"></textarea>
-<br><br><button type="submit">+ ลงประกาศขาย</button>
-</form>
-</div>
-<div class="card">
-<h2>🔎 ค้นหาผลผลิต</h2>
-<label>เลือกชนิดผลผลิต</label>
-<select id="filter"><option value="">ผลผลิตทั้งหมด</option><option>ข้าวโพดเลี้ยงสัตว์</option><option>ข้าว</option><option>อ้อย</option><option>มันสำปะหลัง</option><option>ผัก</option><option>อื่น ๆ</option></select>
-<div id="listings"><p class="small">ยังไม่มีประกาศขาย
-<section id="farm-ai" style="padding:20px;background:#f0f7f1;border-radius:16px;margin:16px 0">
-<h2>🌱 TAWAN Farm AI</h2>
-<label>พื้นที่ (ไร่)</label>
-<input id="faArea" type="number" min="0" value="10" style="display:block;width:100%;padding:12px;box-sizing:border-box;margin:8px 0">
-<label>ผลผลิตต่อไร่ (กิโลกรัม)</label>
-<input id="faYield" type="number" min="0" value="1000" style="display:block;width:100%;padding:12px;box-sizing:border-box;margin:8px 0">
-<label>ราคาขายต่อกิโลกรัม (บาท)</label>
-<input id="faPrice" type="number" min="0" step="0.01" value="8" style="display:block;width:100%;padding:12px;box-sizing:border-box;margin:8px 0">
-<label>ต้นทุนรวม (บาท)</label>
-<input id="faCost" type="number" min="0" value="45000" style="display:block;width:100%;padding:12px;box-sizing:border-box;margin:8px 0">
-<button onclick="tawanCalculate()" style="width:100%;padding:14px;background:#176b42;color:white;border:0;border-radius:10px">คำนวณรายรับและกำไร</button>
-<div id="faResult" style="margin-top:14px;padding:14px;background:white;border-radius:10px">กรอกข้อมูลแล้วกดคำนวณ</div>
-</section>
-<section style="padding:20px;background:white;border-radius:16px;margin:16px 0">
-<h2>🛒 Smart Market</h2>
-<input id="mpName" placeholder="ชื่อผลผลิต" style="width:100%;padding:12px;box-sizing:border-box;margin:6px 0">
-<input id="mpQty" type="number" min="1" placeholder="จำนวน (กิโลกรัม)" style="width:100%;padding:12px;box-sizing:border-box;margin:6px 0">
-<input id="mpPrice" type="number" min="0" step="0.01" placeholder="ราคา/กิโลกรัม" style="width:100%;padding:12px;box-sizing:border-box;margin:6px 0">
-<button onclick="tawanAddProduct()" style="width:100%;padding:14px;background:#176b42;color:white;border:0;border-radius:10px">ลงประกาศ</button>
-<div id="mpList"></div>
-</section>
-<script>
-(function(){
-const key="tawan_products_v1";
-function read(){try{return JSON.parse(localStorage.getItem(key)||"[]")}catch(e){return []}}
-function safe(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function render(){const el=document.getElementById("mpList");if(!el)return;const items=read();el.innerHTML=items.length?items.map(p=>'<div style="padding:12px;border:1px solid #ddd;border-radius:10px;margin-top:10px"><b>'+safe(p.name)+'</b><p>จำนวน '+p.qty.toLocaleString('th-TH')+' กก.</p><p>ราคา '+p.price.toLocaleString('th-TH')+' บาท/กก.</p></div>').join(""):"<p>ยังไม่มีประกาศ</p>"}
-window.tawanAddProduct=function(){const name=document.getElementById("mpName").value.trim();const q=document.getElementById("mpQty").value;const p=document.getElementById("mpPrice").value;if(!name||q===""||p===""||Number(q)<=0||Number(p)<0){alert("กรุณากรอกข้อมูลให้ครบ");return}const items=read();items.unshift({name:name,qty:Number(q),price:Number(p)});try{localStorage.setItem(key,JSON.stringify(items));document.getElementById("mpName").value="";document.getElementById("mpQty").value="";document.getElementById("mpPrice").value="";render()}catch(e){alert("บันทึกข้อมูลไม่สำเร็จ")}};
-window.tawanCalculate=function(){const a=Number(document.getElementById("faArea").value),y=Number(document.getElementById("faYield").value),p=Number(document.getElementById("faPrice").value),c=Number(document.getElementById("faCost").value);const ids=["faArea","faYield","faPrice","faCost"];if(ids.some(id=>document.getElementById(id).value===""||Number(document.getElementById(id).value)<0)||a<=0){alert("กรุณากรอกตัวเลขให้ถูกต้อง และพื้นที่ต้องมากกว่า 0");return}const kg=a*y,rev=kg*p,profit=rev-c;const fmt=n=>n.toLocaleString("th-TH",{maximumFractionDigits:2})+" บาท";document.getElementById("faResult").innerHTML="<p>ผลผลิตรวม: <b>"+kg.toLocaleString("th-TH")+" กก.</b></p><p>รายรับ: <b>"+fmt(rev)+"</b></p><p>ต้นทุน: <b>"+fmt(c)+"</b></p><p>กำไร/ขาดทุน: <b>"+fmt(profit)+"</b></p><p>ราคาคุ้มทุน: <b>"+fmt(kg?c/kg:0)+" / กก.</b></p>"};
-render();
-})();
-</script>
+<body class="bg-emerald-50 text-slate-800 font-sans min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-emerald-800 text-white py-6 px-4 shadow-lg">
+    <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="text-center md:text-left">
+        <h1 class="text-3xl font-extrabold flex items-center justify-center md:justify-start gap-2">
+          🌱 TAWAN Smart Farm AI
+        </h1>
+        <p class="mt-1 text-emerald-100 text-sm">
+          แพลตฟอร์มจับคู่ซื้อขายผลผลิตเกษตร | อ.ตากฟ้า จ.นครสวรรค์
+        </p>
+      </div>
+
+      <!-- Auth Action Section -->
+      <div id="auth-section" class="flex items-center gap-3">
+        <!-- แสดงเมื่อยังไม่ได้ Login -->
+        <div id="guest-controls" class="flex gap-2">
+          <button onclick="openAuthModal('login')" class="bg-emerald-700 hover:bg-emerald-600 px-4 py-2 rounded-lg font-bold text-sm transition-all shadow">
+            เข้าสู่ระบบ
+          </button>
+          <button onclick="openAuthModal('register')" class="bg-white text-emerald-800 hover:bg-emerald-100 px-4 py-2 rounded-lg font-bold text-sm transition-all shadow">
+            ลงทะเบียน
+          </button>
+        </div>
+        <!-- แสดงเมื่อ Login แล้ว -->
+        <div id="user-controls" class="hidden flex items-center gap-3">
+          <span class="text-sm font-semibold bg-emerald-900/60 px-3 py-1.5 rounded-lg border border-emerald-700">
+            👤 <span id="user-display-name">ผู้ใช้งาน</span>
+          </span>
+          <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg font-bold text-xs transition-all shadow">
+            ออกจากระบบ
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="max-w-4xl mx-auto p-4 md:p-6">
+    
+    <!-- Navigation Tabs -->
+    <nav class="flex gap-2 mb-6 border-b border-emerald-200 pb-2">
+      <button id="btn-match" onclick="switchTab('match')" class="px-5 py-2.5 rounded-lg font-bold bg-emerald-800 text-white shadow transition-all">
+        🤝 Smart Match
+      </button>
+      <button id="btn-farm" onclick="switchTab('farm')" class="px-5 py-2.5 rounded-lg font-bold bg-emerald-100 text-emerald-800 hover:bg-emerald-200 transition-all">
+        📊 Farm AI
+      </button>
+    </nav>
+
+    <!-- SECTION 1: Smart Match -->
+    <section id="tab-match" class="space-y-6">
+      
+      <!-- Form ประกาศขาย (ต้อง Login ก่อน) -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-100 relative">
+        <h2 class="text-xl font-bold text-emerald-900 mb-4 flex items-center gap-2">📦 ลงประกาศขายผลผลิต</h2>
+        
+        <!-- Mask เตือนเมื่อยังไม่ได้ Login -->
+        <div id="login-lock-overlay" class="absolute inset-0 bg-white/90 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center p-6 text-center z-10">
+          <div class="text-4xl mb-2">🔒</div>
+          <h3 class="font-bold text-lg text-slate-800">กรุณาเข้าสู่ระบบก่อนลงประกาศ</h3>
+          <p class="text-sm text-gray-500 mb-4">เข้าสู่ระบบเพื่อยืนยันตัวตนและสร้างประกาศขายผลผลิตของคุณ</p>
+          <button onclick="openAuthModal('login')" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-6 py-2.5 rounded-lg shadow">
+            เข้าสู่ระบบทันที
+          </button>
+        </div>
+
+        <form id="form-match" onsubmit="submitMatch(event)" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold mb-1">ผลผลิต</label>
+              <select id="m-crop" required class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none">
+                <option value="">เลือกประเภทผลผลิต</option>
+                <option value="ข้าวโพดเลี้ยงสัตว์">ข้าวโพดเลี้ยงสัตว์</option>
+                <option value="ข้าว">ข้าว</option>
+                <option value="อ้อย">อ้อย</option>
+                <option value="มันสำปะหลัง">มันสำปะหลัง</option>
+                <option value="ผัก">ผัก</option>
+                <option value="อื่น ๆ">อื่น ๆ</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-1">ปริมาณ (กก.)</label>
+              <input type="number" id="m-qty" step="any" min="1" required class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-1">ราคา (บาท/กก.)</label>
+              <input type="number" id="m-price" step="0.01" min="0" required class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-1">พื้นที่รับ/ส่งสินค้า</label>
+              <input type="text" id="m-area" value="ตากฟ้า นครสวรรค์" required class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-1">รายละเอียดเพิ่มเติม</label>
+            <textarea id="m-detail" rows="2" class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="เช่น คุณภาพ ความชื้น วันพร้อมส่ง..."></textarea>
+          </div>
+          <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-lg shadow transition-all">+ ลงประกาศขาย</button>
+        </form>
+      </div>
+
+      <!-- รายการประกาศขาย -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-100">
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-2">
+          <h2 class="text-xl font-bold text-emerald-900">🔎 รายการผลผลิตทั้งหมด</h2>
+          <select id="m-filter" onchange="loadMatches()" class="p-2 border rounded-lg bg-emerald-50 text-sm font-semibold">
+            <option value="">ทุกชนิดผลผลิต</option>
+            <option value="ข้าวโพดเลี้ยงสัตว์">ข้าวโพดเลี้ยงสัตว์</option>
+            <option value="ข้าว">ข้าว</option>
+            <option value="อ้อย">อ้อย</option>
+            <option value="มันสำปะหลัง">มันสำปะหลัง</option>
+            <option value="ผัก">ผัก</option>
+            <option value="อื่น ๆ">อื่น ๆ</option>
+          </select>
+        </div>
+        <div id="match-listings" class="space-y-3">
+          <p class="text-gray-500 text-center py-4">กำลังโหลดข้อมูล...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: Farm AI -->
+    <section id="tab-farm" class="space-y-6 hidden">
+      <div class="bg-emerald-100/60 p-6 rounded-2xl border border-emerald-200">
+        <h2 class="text-xl font-bold text-emerald-900 mb-4">📊 เครื่องมือคำนวณต้นทุนและกำไร (Farm AI)</h2>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold mb-1">พื้นที่ปลูก (ไร่)</label>
+            <input type="number" id="fa-area" value="10" min="0.1" step="any" class="w-full p-2.5 bg-white border rounded-lg">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-1">ผลผลิตคาดการณ์ต่อไร่ (กก.)</label>
+            <input type="number" id="fa-yield" value="1000" min="0" step="any" class="w-full p-2.5 bg-white border rounded-lg">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-1">คาดการณ์ราคาขาย (บาท/กก.)</label>
+            <input type="number" id="fa-price" value="8" min="0" step="0.01" class="w-full p-2.5 bg-white border rounded-lg">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-1">ต้นทุนรวมทั้งหมด (บาท)</label>
+            <input type="number" id="fa-cost" value="45000" min="0" step="any" class="w-full p-2.5 bg-white border rounded-lg">
+          </div>
+          <button onclick="calculateFarm()" class="w-full bg-emerald-800 hover:bg-emerald-900 text-white font-bold py-3 rounded-lg shadow transition-all">
+            คำนวณผลตอบแทน
+          </button>
+        </div>
+
+        <div id="fa-result" class="mt-6 bg-white p-5 rounded-xl shadow-sm border border-emerald-100 hidden">
+          <h3 class="font-bold text-lg text-emerald-900 mb-3 border-b pb-2">สรุปผลการวิเคราะห์</h3>
+          <div class="space-y-2 text-sm md:text-base">
+            <div class="flex justify-between"><span>ผลผลิตรวมทั้งหมด:</span><b id="res-kg" class="text-slate-800">-</b></div>
+            <div class="flex justify-between"><span>ประมาณการรายรับ:</span><b id="res-rev" class="text-emerald-700">-</b></div>
+            <div class="flex justify-between"><span>ต้นทุนรวม:</span><b id="res-cost" class="text-red-600">-</b></div>
+            <div class="flex justify-between text-base md:text-lg pt-2 border-t"><span>คาดการณ์กำไรสุทธิ:</span><b id="res-profit">-</b></div>
+            <div class="flex justify-between text-xs text-gray-500 pt-1"><span>จุดคุ้มทุน (Price Breakeven):</span><span id="res-bep">-</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: Auth (Login & Register) -->
+  <div id="auth-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white w-full max-w-md p-6 rounded-2xl shadow-2xl relative">
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold">✕</button>
+      
+      <!-- Login Form -->
+      <div id="modal-login-view">
+        <h3 class="text-2xl font-bold text-emerald-900 mb-1">เข้าสู่ระบบ</h3>
+        <p class="text-xs text-gray-500 mb-4">เข้าใช้งานบัญชี TAWAN Smart Farm AI</p>
+        
+        <form onsubmit="handleLogin(event)" class="space-y-3">
+          <div>
+            <label class="block text-xs font-bold mb-1">อีเมล</label>
+            <input type="email" id="login-email" required class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">รหัสผ่าน</label>
+            <input type="password" id="login-password" required class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+          </div>
+          <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded-lg shadow transition-all mt-2">
+            เข้าสู่ระบบ
+          </button>
+        </form>
+        <p class="text-xs text-center text-gray-500 mt-4">
+          ยังไม่มีบัญชีใช่ไหม? <a href="#" onclick="toggleAuthView('register')" class="text-emerald-700 font-bold underline">สมัครสมาชิก</a>
+        </p>
+      </div>
+
+      <!-- Register Form -->
+      <div id="modal-register-view" class="hidden">
+        <h3 class="text-2xl font-bold text-emerald-900 mb-1">สมัครสมาชิก</h3>
+        <p class="text-xs text-gray-500 mb-4">สร้างบัญชีเพื่อลงประกาศขายและจัดการผลผลิต</p>
+        
+        <form onsubmit="handleRegister(event)" class="space-y-3">
+          <div>
+            <label class="block text-xs font-bold mb-1">ชื่อ - นามสกุล</label>
+            <input type="text" id="reg-name" required class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">อีเมล</label>
+            <input type="email" id="reg-email" required class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">เบอร์โทรศัพท์ / LINE ID</label>
+            <input type="text" id="reg-phone" required class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">รหัสผ่าน</label>
+            <input type="password" id="reg-password" required minlength="6" class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+          </div>
+          <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded-lg shadow transition-all mt-2">
+            ยืนยันการสมัครสมาชิก
+          </button>
+        </form>
+        <p class="text-xs text-center text-gray-500 mt-4">
+          มีบัญชีอยู่แล้ว? <a href="#" onclick="toggleAuthView('login')" class="text-emerald-700 font-bold underline">เข้าสู่ระบบ</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // --- State Management ---
+    let authToken = localStorage.getItem('tawan_token') || null;
+    let currentUser = JSON.parse(localStorage.getItem('tawan_user') || 'null');
+
+    // --- Auth UI Management ---
+    function updateAuthState() {
+      const guestControls = document.getElementById('guest-controls');
+      const userControls = document.getElementById('user-controls');
+      const lockOverlay = document.getElementById('login-lock-overlay');
+      const userDisplay = document.getElementById('user-display-name');
+
+      if (authToken && currentUser) {
+        guestControls.classList.add('hidden');
+        userControls.classList.remove('hidden');
+        lockOverlay.classList.add('hidden');
+        userDisplay.innerText = currentUser.full_name;
+      } else {
+        guestControls.classList.remove('hidden');
+        userControls.classList.add('hidden');
+        lockOverlay.classList.remove('hidden');
+      }
+    }
+
+    function openAuthModal(view = 'login') {
+      toggleAuthView(view);
+      document.getElementById('auth-modal').classList.remove('hidden');
+    }
+
+    function closeAuthModal() {
+      document.getElementById('auth-modal').classList.add('hidden');
+    }
+
+    function toggleAuthView(view) {
+      document.getElementById('modal-login-view').classList.toggle('hidden', view !== 'login');
+      document.getElementById('modal-register-view').classList.toggle('hidden', view !== 'register');
+    }
+
+    // --- Authentication Handlers ---
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+
+      // OAuth2 Form Data format for FastAPI
+      const formData = new URLSearchParams();
+      formData.append('username', email);
+      formData.append('password', password);
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: formData
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'เข้าสู่ระบบไม่สำเร็จ');
+
+        authToken = data.access_token;
+        currentUser = data.user;
+        
+        localStorage.setItem('tawan_token', authToken);
+        localStorage.setItem('tawan_user', JSON.stringify(currentUser));
+
+        alert(`ยินดีต้อนรับคุณ ${currentUser.full_name}!`);
+        closeAuthModal();
+        updateAuthState();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const payload = {
+        full_name: document.getElementById('reg-name').value,
+        email: document.getElementById('reg-email').value,
+        phone: document.getElementById('reg-phone').value,
+        password: document.getElementById('reg-password').value
+      };
+
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'สมัครสมาชิกไม่สำเร็จ');
+
+        alert('สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบด้วยบัญชีของคุณ');
+        toggleAuthView('login');
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    function logout() {
+      if (confirm('คุณต้องการออกจากระบบหรือไม่?')) {
+        authToken = null;
+        currentUser = null;
+        localStorage.removeItem('tawan_token');
+        localStorage.removeItem('tawan_user');
+        updateAuthState();
+      }
+    }
+
+    // --- API Interactions (Protected with JWT) ---
+    async function loadMatches() {
+      const crop = document.getElementById('m-filter').value;
+      const url = crop ? `/api/listings?crop=${encodeURIComponent(crop)}` : '/api/listings';
+      
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        const container = document.getElementById('match-listings');
+
+        if (data.length === 0) {
+          container.innerHTML = `<p class="text-gray-500 text-center py-4">ไม่พบรายการผลผลิต</p>`;
+          return;
+        }
+
+        container.innerHTML = data.map(item => `
+          <div class="p-4 border rounded-xl hover:border-emerald-300 transition-all bg-emerald-50/30">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="inline-block bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full mb-1">${item.crop}</span>
+                <h3 class="font-bold text-lg text-slate-800">${item.owner ? item.owner.full_name : 'ไม่ระบุชื่อ'}</h3>
+              </div>
+              <div class="text-right">
+                <span class="text-xl font-extrabold text-emerald-700">${item.price.toLocaleString()}</span>
+                <span class="text-xs text-gray-500">บาท/กก.</span>
+              </div>
+            </div>
+            <div class="text-sm text-gray-600 mt-2 space-y-1">
+              <p>📦 ปริมาณ: <b>${item.quantity.toLocaleString()} กก.</b> | 📍 พื้นที่: ${item.area}</p>
+              <p>📞 ติดต่อ: <b class="text-emerald-800">${item.owner ? item.owner.phone : '-'}</b></p>
+              ${item.detail ? `<p class="text-xs text-gray-500 bg-white p-2 rounded border mt-1">${item.detail}</p>` : ''}
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error("Error loading listings:", err);
+      }
+    }
+
+    async function submitMatch(e) {
+      e.preventDefault();
+      if (!authToken) {
+        openAuthModal('login');
+        return;
+      }
+
+      const payload = {
+        crop: document.getElementById('m-crop').value,
+        quantity: parseFloat(document.getElementById('m-qty').value),
+        price: parseFloat(document.getElementById('m-price').value),
+        area: document.getElementById('m-area').value,
+        detail: document.getElementById('m-detail').value
+      };
+
+      try {
+        const res = await fetch('/api/listings', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}` // ส่ง JWT Token
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'สร้างประกาศไม่สำเร็จ');
+
+        alert('ลงประกาศขายสำเร็จ!');
+        document.getElementById('form-match').reset();
+        document.getElementById('m-area').value = "ตากฟ้า นครสวรรค์";
+        loadMatches();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    // --- Tab Switching ---
+    function switchTab(tab) {
+      ['match', 'farm'].forEach(t => {
+        document.getElementById(`tab-${t}`).classList.add('hidden');
+        const btn = document.getElementById(`btn-${t}`);
+        btn.className = "px-5 py-2.5 rounded-lg font-bold bg-emerald-100 text-emerald-800 hover:bg-emerald-200 transition-all";
+      });
+
+      document.getElementById(`tab-${tab}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`btn-${tab}`);
+      activeBtn.className = "px-5 py-2.5 rounded-lg font-bold bg-emerald-800 text-white shadow transition-all";
+
+      if (tab === 'match') loadMatches();
+    }
+
+    // --- Farm AI Calculation ---
+    function calculateFarm() {
+      const area = parseFloat(document.getElementById('fa-area').value) || 0;
+      const yieldPerRai = parseFloat(document.getElementById('fa-yield').value) || 0;
+      const price = parseFloat(document.getElementById('fa-price').value) || 0;
+      const cost = parseFloat(document.getElementById('fa-cost').value) || 0;
+
+      if (area <= 0) {
+        alert('กรุณากรอกพื้นที่ปลูกให้มากกว่า 0');
+        return;
+      }
+
+      const totalKg = area * yieldPerRai;
+      const totalRev = totalKg * price;
+      const profit = totalRev - cost;
+      const breakeven = totalKg > 0 ? (cost / totalKg) : 0;
+
+      document.getElementById('res-kg').innerText = `${totalKg.toLocaleString()} กก.`;
+      document.getElementById('res-rev').innerText = `${totalRev.toLocaleString(undefined, {maximumFractionDigits: 2})} บาท`;
+      document.getElementById('res-cost').innerText = `${cost.toLocaleString(undefined, {maximumFractionDigits: 2})} บาท`;
+      
+      const profitEl = document.getElementById('res-profit');
+      profitEl.innerText = `${profit.toLocaleString(undefined, {maximumFractionDigits: 2})} บาท`;
+      profitEl.className = profit >= 0 ? "text-emerald-700 font-extrabold" : "text-red-600 font-extrabold";
+
+      document.getElementById('res-bep').innerText = `${breakeven.toLocaleString(undefined, {maximumFractionDigits: 2})} บาท/กก.`;
+      document.getElementById('fa-result').classList.remove('hidden');
+    }
+
+    // --- Initialization ---
+    updateAuthState();
+    loadMatches();
+  </script>
+</body>
+</html>
