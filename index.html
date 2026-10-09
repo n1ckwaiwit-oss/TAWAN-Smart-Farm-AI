@@ -1,1 +1,68 @@
 index.html
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TAWAN Smart Farm AI</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f3f8f1;color:#243326}
+header{background:#166534;color:white;padding:25px 18px}
+header h1{margin:0 0 10px}
+header p{margin:0;line-height:1.6}
+main{max-width:950px;margin:auto;padding:18px}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+button{border:0;border-radius:9px;padding:12px 16px;background:#166534;color:white;font-weight:bold;cursor:pointer}
+nav button{background:#dcfce7;color:#166534}
+nav button.active{background:#166534;color:white}
+.card{background:white;padding:18px;border-radius:15px;margin-bottom:16px;box-shadow:0 3px 12px #0000000c}
+h2{margin-top:0}
+label{display:block;font-weight:bold;margin:12px 0 6px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5cc;border-radius:8px;font-size:16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.full{grid-column:1/-1}
+.hidden{display:none}
+.item{border:1px solid #dbe7dc;border-radius:10px;padding:13px;margin-top:12px}
+.price{font-size:20px;font-weight:bold;color:#166534}
+.small{font-size:13px;color:#657368;line-height:1.7}
+@media(max-width:550px){.grid{grid-template-columns:1fr}.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<header>
+<h1>🌱 TAWAN Smart Farm AI</h1>
+<p>แพลตฟอร์มจับคู่ซื้อขายผลผลิตเกษตร<br>เริ่มต้นที่อำเภอตากฟ้า จังหวัดนครสวรรค์</p>
+</header>
+<main>
+<nav>
+<button class="active" onclick="showTab('match',this)">🤝 Smart Match</button>
+<button onclick="showTab('market',this)">🌾 Smart Market</button>
+<button onclick="showTab('farm',this)">📊 Farm AI</button>
+</nav>
+<section id="match">
+<div class="card">
+<h2>📦 ลงประกาศขายผลผลิต</h2>
+<form id="sellForm">
+<div class="grid">
+<div><label>ชื่อผู้ขาย</label><input id="seller" required placeholder="ชื่อเกษตรกร"></div>
+<div><label>ผลผลิต</label>
+<select id="crop" required>
+<option value="">เลือกผลผลิต</option>
+<option>ข้าวโพดเลี้ยงสัตว์</option><option>ข้าว</option>
+<option>อ้อย</option><option>มันสำปะหลัง</option><option>ผัก</option><option>อื่น ๆ</option>
+</select></div>
+<div><label>ปริมาณ (กิโลกรัม)</label><input id="qty" type="number" min="1" required></div>
+<div><label>ราคา (บาท/กก.)</label><input id="price" type="number" min="0" step="0.01" required></div>
+<div><label>พื้นที่</label><input id="area" value="ตากฟ้า นครสวรรค์" required></div>
+<div><label>เบอร์โทรหรือ LINE</label><input id="contact" required></div>
+</div>
+<label>รายละเอียดเพิ่มเติม</label><textarea id="detail" placeholder="คุณภาพสินค้า วันพร้อมส่ง ฯลฯ"></textarea>
+<br><br><button type="submit">+ ลงประกาศขาย</button>
+</form>
+</div>
+<div class="card">
+<h2>🔎 ค้นหาผลผลิต</h2>
+<label>เลือกชนิดผลผลิต</label>
+<select id="filter"><option value="">ผลผลิตทั้งหมด</option><option>ข้าวโพดเลี้ยงสัตว์</option><option>ข้าว</option><option>อ้อย</option><option>มันสำปะหลัง</option><option>ผัก</option><option>อื่น ๆ</option></select>
+<div id="listings"><p class="small">ยังไม่มีประกาศขาย
