@@ -66,3 +66,35 @@ input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5cc;border-ra
 <label>เลือกชนิดผลผลิต</label>
 <select id="filter"><option value="">ผลผลิตทั้งหมด</option><option>ข้าวโพดเลี้ยงสัตว์</option><option>ข้าว</option><option>อ้อย</option><option>มันสำปะหลัง</option><option>ผัก</option><option>อื่น ๆ</option></select>
 <div id="listings"><p class="small">ยังไม่มีประกาศขาย
+<section id="farm-ai" style="padding:20px;background:#f0f7f1;border-radius:16px;margin:16px 0">
+<h2>🌱 TAWAN Farm AI</h2>
+<label>พื้นที่ (ไร่)</label>
+<input id="faArea" type="number" min="0" value="10" style="display:block;width:100%;padding:12px;box-sizing:border-box;margin:8px 0">
+<label>ผลผลิตต่อไร่ (กิโลกรัม)</label>
+<input id="faYield" type="number" min="0" value="1000" style="display:block;width:100%;padding:12px;box-sizing:border-box;margin:8px 0">
+<label>ราคาขายต่อกิโลกรัม (บาท)</label>
+<input id="faPrice" type="number" min="0" step="0.01" value="8" style="display:block;width:100%;padding:12px;box-sizing:border-box;margin:8px 0">
+<label>ต้นทุนรวม (บาท)</label>
+<input id="faCost" type="number" min="0" value="45000" style="display:block;width:100%;padding:12px;box-sizing:border-box;margin:8px 0">
+<button onclick="tawanCalculate()" style="width:100%;padding:14px;background:#176b42;color:white;border:0;border-radius:10px">คำนวณรายรับและกำไร</button>
+<div id="faResult" style="margin-top:14px;padding:14px;background:white;border-radius:10px">กรอกข้อมูลแล้วกดคำนวณ</div>
+</section>
+<section style="padding:20px;background:white;border-radius:16px;margin:16px 0">
+<h2>🛒 Smart Market</h2>
+<input id="mpName" placeholder="ชื่อผลผลิต" style="width:100%;padding:12px;box-sizing:border-box;margin:6px 0">
+<input id="mpQty" type="number" min="1" placeholder="จำนวน (กิโลกรัม)" style="width:100%;padding:12px;box-sizing:border-box;margin:6px 0">
+<input id="mpPrice" type="number" min="0" step="0.01" placeholder="ราคา/กิโลกรัม" style="width:100%;padding:12px;box-sizing:border-box;margin:6px 0">
+<button onclick="tawanAddProduct()" style="width:100%;padding:14px;background:#176b42;color:white;border:0;border-radius:10px">ลงประกาศ</button>
+<div id="mpList"></div>
+</section>
+<script>
+(function(){
+const key="tawan_products_v1";
+function read(){try{return JSON.parse(localStorage.getItem(key)||"[]")}catch(e){return []}}
+function safe(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function render(){const el=document.getElementById("mpList");if(!el)return;const items=read();el.innerHTML=items.length?items.map(p=>'<div style="padding:12px;border:1px solid #ddd;border-radius:10px;margin-top:10px"><b>'+safe(p.name)+'</b><p>จำนวน '+p.qty.toLocaleString('th-TH')+' กก.</p><p>ราคา '+p.price.toLocaleString('th-TH')+' บาท/กก.</p></div>').join(""):"<p>ยังไม่มีประกาศ</p>"}
+window.tawanAddProduct=function(){const name=document.getElementById("mpName").value.trim();const q=document.getElementById("mpQty").value;const p=document.getElementById("mpPrice").value;if(!name||q===""||p===""||Number(q)<=0||Number(p)<0){alert("กรุณากรอกข้อมูลให้ครบ");return}const items=read();items.unshift({name:name,qty:Number(q),price:Number(p)});try{localStorage.setItem(key,JSON.stringify(items));document.getElementById("mpName").value="";document.getElementById("mpQty").value="";document.getElementById("mpPrice").value="";render()}catch(e){alert("บันทึกข้อมูลไม่สำเร็จ")}};
+window.tawanCalculate=function(){const a=Number(document.getElementById("faArea").value),y=Number(document.getElementById("faYield").value),p=Number(document.getElementById("faPrice").value),c=Number(document.getElementById("faCost").value);const ids=["faArea","faYield","faPrice","faCost"];if(ids.some(id=>document.getElementById(id).value===""||Number(document.getElementById(id).value)<0)||a<=0){alert("กรุณากรอกตัวเลขให้ถูกต้อง และพื้นที่ต้องมากกว่า 0");return}const kg=a*y,rev=kg*p,profit=rev-c;const fmt=n=>n.toLocaleString("th-TH",{maximumFractionDigits:2})+" บาท";document.getElementById("faResult").innerHTML="<p>ผลผลิตรวม: <b>"+kg.toLocaleString("th-TH")+" กก.</b></p><p>รายรับ: <b>"+fmt(rev)+"</b></p><p>ต้นทุน: <b>"+fmt(c)+"</b></p><p>กำไร/ขาดทุน: <b>"+fmt(profit)+"</b></p><p>ราคาคุ้มทุน: <b>"+fmt(kg?c/kg:0)+" / กก.</b></p>"};
+render();
+})();
+</script>
